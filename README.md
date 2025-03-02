@@ -1,4 +1,4 @@
-# THIS IS A FORK OF Egor's SR2MP, WITH SYNC SIMILAR NewSR2MP
+# THIS IS A FORK OF Egor's SR2MP, WITH SYNC SIMILAR TO NewSR2MP
 
 # SR2MP
 Multiplayer mod for Slime Rancher 2
