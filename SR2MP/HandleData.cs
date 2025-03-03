@@ -208,10 +208,70 @@ namespace SR2MP
                 gordoEat.GordoModel.GordoEatenCount = count;
 
                 if (gordoEat.GetEatenCount() >= gordoEat.GetTargetCount())
-                {
                     gordoEat.StartCoroutine(gordoEat.ReachedTarget());
-                }
             }
+        }
+        public static void HandleActorSpawn(Packet _packet)
+        {
+            var ident = _packet.ReadInt();
+            var objID = _packet.ReadLong();
+            var initPos = _packet.ReadVector3();
+
+            var gameObject = InstantiationHelpers.InstantiateActor(
+                MultiplayerCore.identifiableTypes[ident].prefab,
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup, // Just a place holder, please add to the packet soon!
+                initPos,
+                Quaternion.identity);
+            
+            if (objID != -1)
+                gameObject.GetComponent<IdentifiableActor>()._model.actorId = new ActorId(objID);
+
+            gameObject.AddComponent<NetworkActor>();
+
+            if (SteamLobby.Host)
+            {
+                SendData.SendActorSpawn(gameObject.GetComponent<IdentifiableActor>());
+            }
+        }
+        
+        public static void HandleActorUpdate(Packet _packet)
+        {
+            var objID = _packet.ReadLong();
+            var initPos = _packet.ReadVector3();
+            var initAngles = _packet.ReadVector3();
+
+            if (NetworkActor.All.TryGetValue(objID, out var actor))
+            {
+                actor.ReceivedPosition = initPos;
+                actor.ReceivedRotation = initAngles;
+            }
+        }
+        
+        public static void HandleActorDestroy(Packet _packet)
+        {
+            var objID = _packet.ReadLong();
+
+            if (NetworkActor.All.TryGetValue(objID, out var actor))
+                actor.Destroy();
+        }
+        
+        public static void HandleActorMovementInteraction(Packet _packet)
+        {
+            var objID = _packet.ReadLong();
+            var force = _packet.ReadVector3();
+
+            if (NetworkActor.All.TryGetValue(objID, out var actor))
+                if(actor.TryGetComponent<Rigidbody>(out var rigidbody))
+                    rigidbody.velocity = force;
+        }
+        
+        public static void HandleActorSyncToggle(Packet _packet)
+        {
+            var objID = _packet.ReadLong();
+            var toggle = _packet.ReadBool();
+
+            if (NetworkActor.All.TryGetValue(objID, out var actor))
+                actor.HandleSync = toggle;
         }
     }
 }

@@ -10,6 +10,23 @@ namespace SR2MP
 {
     public class MultiplayerCore : MonoBehaviour
     {
+        public static int GetIdentID(IdentifiableType ident)
+        {
+            return GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId.GetPersistenceId(ident);
+        }
+        
+        public static Dictionary<int, IdentifiableType> identifiableTypes = new Dictionary<int, IdentifiableType>();
+
+        internal static void InitializeIdentifiableTypes()
+        {
+            int idx = 0;
+            foreach (var id in GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._reverseIndex)
+            {
+                identifiableTypes.Add(idx, GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeLookup[id.key]);
+                idx++;
+            }
+        }
+        
         bool getBeatrix = true;
         bool setUpBeatrix = false;
         GameObject localPlayer;

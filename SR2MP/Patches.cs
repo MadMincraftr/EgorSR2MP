@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using UnityEngine;
 
 namespace SR2MP
@@ -16,6 +17,13 @@ namespace SR2MP
         {
             return !SteamLobby.Joined;
         }
+    }
+    
+    [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
+    class AutoSaveDirector_Awake
+    {
+        public static void Postfix(AutoSaveDirector __instance)
+            => MultiplayerCore.InitializeIdentifiableTypes();
     }
 
     [HarmonyPatch(typeof(LandPlot), nameof(LandPlot.AddUpgrade))]
@@ -98,4 +106,37 @@ namespace SR2MP
             }
         }
     }
+
+    [HarmonyPatch(typeof(VacuumItem), nameof(VacuumItem.Consume))]
+    class VacuumItem_Consume
+    {
+        public static void Prefix(Il2CppSystem.Collections.Generic.HashSet<GameObject> inVac)
+        {
+            foreach (var obj in inVac)
+                if (obj.TryGetComponent<NetworkActor>(out var actor))
+                    actor.ApplyForceFromClient(actor.RB.velocity);
+        }
+    }
+    
+    [HarmonyPatch(typeof(IdentifiableActor), nameof(IdentifiableActor.Awake))]
+    class IdentifiableActor_Awake
+    {
+        public static void Postfix(IdentifiableActor __instance)
+        {
+            if (!Networking.HandlePacket)
+            {
+                __instance.gameObject.AddComponent<NetworkActor>();
+
+                if (SystemContext.Instance.SceneLoader.IsSceneLoadInProgress)
+                    return;
+                
+                SendData.SendActorSpawn(__instance);
+
+                if (SteamLobby.Joined)
+                    Destroyer.DestroyActor(__instance.gameObject, "SR2MP.ClientSpawn");
+                
+            }
+        }
+    }
+    
 }

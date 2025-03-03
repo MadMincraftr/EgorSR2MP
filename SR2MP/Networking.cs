@@ -72,7 +72,12 @@ namespace SR2MP
                 { (int)Packets.Sleep, HandleData.HandleSleep },
                 { (int)Packets.Prices, HandleData.HandlePrices },
                 { (int)Packets.MapOpen, HandleData.HandleMapOpen },
-                { (int)Packets.GordoEat, HandleData.HandleGordoEat }
+                { (int)Packets.GordoEat, HandleData.HandleGordoEat }, 
+                { (int)Packets.ActorUpdate, HandleData.HandleActorUpdate },
+                { (int)Packets.ActorSpawn, HandleData.HandleActorSpawn },
+                { (int)Packets.ActorDestroy, HandleData.HandleActorDestroy },
+                { (int)Packets.ClientInteractActor, HandleData.HandleActorMovementInteraction },
+                { (int)Packets.ActorToggleSync, HandleData.HandleActorSyncToggle },
             };
         }
     }

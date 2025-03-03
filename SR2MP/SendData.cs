@@ -157,5 +157,58 @@ namespace SR2MP
                 Networking.SendReliableData(_packet);
             }
         }
+        
+        public static void SendActorSpawn(IdentifiableActor actor)
+        {
+            using (Packet _packet = new Packet((int)Packets.ActorSpawn))
+            {
+                _packet.Write(MultiplayerCore.GetIdentID(actor.identType));
+                _packet.Write(SteamLobby.Host ? actor._model.actorId.Value : -1);
+                _packet.Write(actor.transform.position);
+                
+                Networking.SendReliableData(_packet);
+            }
+        }
+        
+        public static void SendActorUpdate(IdentifiableActor actor)
+        {
+            using (Packet _packet = new Packet((int)Packets.ActorUpdate))
+            {
+                _packet.Write(actor._model.actorId.Value);
+                _packet.Write(actor.transform.position);
+                _packet.Write(actor.transform.eulerAngles);
+                
+                Networking.SendReliableData(_packet);
+            }
+        }
+        
+        public static void SendActorDestroy(IdentifiableActor actor)
+        {
+            using (Packet _packet = new Packet((int)Packets.ActorDestroy))
+            {
+                _packet.Write(actor._model.actorId.Value);
+                
+                Networking.SendReliableData(_packet);
+            }
+        }
+        public static void SendActorMovementInteraction(long objID, Vector3 force)
+        {
+            using (Packet _packet = new Packet((int)Packets.ClientInteractActor))
+            {
+                _packet.Write(objID);
+                _packet.Write(force);
+                
+                Networking.SendReliableData(_packet);
+            }
+        }public static void SendActorSyncToggle(long objID, bool toggle)
+        {
+            using (Packet _packet = new Packet((int)Packets.ActorToggleSync))
+            {
+                _packet.Write(objID);
+                _packet.Write(toggle);
+                
+                Networking.SendReliableData(_packet);
+            }
+        }
     }
 }

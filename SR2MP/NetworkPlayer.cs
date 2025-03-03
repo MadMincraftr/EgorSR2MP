@@ -40,8 +40,8 @@ namespace SR2MP
         {
             if (MovementReceived)
             {
-                this.transform.position = ReceivedPosition;
-                this.transform.rotation = Quaternion.Euler(this.transform.rotation.x, ReceivedRotation, this.transform.rotation.z);
+                transform.position = ReceivedPosition;
+                transform.rotation = Quaternion.Euler(transform.rotation.x, ReceivedRotation, transform.rotation.z);
                 MovementReceived = false;
             }
 

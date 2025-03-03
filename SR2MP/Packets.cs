@@ -19,7 +19,12 @@ public enum Packets
     Sleep,
     Prices,
     MapOpen,
-    GordoEat
+    GordoEat,
+    ActorUpdate,
+    ActorSpawn,
+    ActorDestroy,
+    ClientInteractActor,
+    ActorToggleSync
 }
 
 public class Packet : IDisposable

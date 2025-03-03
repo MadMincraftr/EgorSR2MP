@@ -91,8 +91,8 @@ namespace SR2MP
 
         private void ReadMovement()
         {
-            _Position = this.transform.position;
-            _Rotation = this.transform.rotation.eulerAngles.y;
+            _Position = transform.position;
+            _Rotation = transform.rotation.eulerAngles.y;
         }
 
         private void ReadAnimations()

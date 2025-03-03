@@ -25,6 +25,7 @@ namespace SR2MP
         {
             ClassInjector.RegisterTypeInIl2Cpp<SteamLobby>();
             ClassInjector.RegisterTypeInIl2Cpp<NetworkPlayer>();
+            ClassInjector.RegisterTypeInIl2Cpp<NetworkActor>();
             ClassInjector.RegisterTypeInIl2Cpp<ReadData>();
         }
 
